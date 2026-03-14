@@ -27,12 +27,13 @@
       }
       .app {
         height: 100vh;
-        width: 100vw;
+        width: 100%;
         display: flex;
         flex-direction: column;
       }
       .top {
-        height: 25vh;
+        min-height: 25vh;
+        flex-shrink: 0;
         display: flex;
         justify-content: center;
         align-items: center;
@@ -66,6 +67,31 @@
         flex-wrap: wrap;
         justify-content: center;
         overflow-y: auto;
+      }
+      @media (max-width: 600px) {
+        .artist {
+          font-size: clamp(2rem, 8vw, 5rem);
+        }
+        nav button {
+          padding: 6px 10px;
+        }
+        nav {
+          display: flex;
+          flex-wrap: wrap;
+          justify-content: center;
+          gap: 6px;
+        }
+      }
+      @media (orientation: landscape) and (max-height: 500px) {
+        .artist {
+          font-size: 1.8rem;
+        }
+        .divider {
+          margin-bottom: 8px;
+        }
+        nav {
+          margin-bottom: 8px;
+        }
       }
     </style>
   </head>

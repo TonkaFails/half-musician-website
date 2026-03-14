@@ -60,6 +60,20 @@
     background-color: wheat;
     color: #43464d;
   }
+  @media (max-width: 600px) {
+    .form-group {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    .form-group label {
+      flex: none;
+    }
+    .form-group input,
+    .form-group textarea {
+      width: 100%;
+      box-sizing: border-box;
+    }
+  }
 </style>
 
 <div id="contact" class="content-section">
