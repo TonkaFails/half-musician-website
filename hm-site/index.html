@@ -107,7 +107,7 @@
         <nav>
           <button onclick="loadSection('about.html', this)" class="nav-btn selected">About Me</button>
           <button onclick="loadSection('work.html', this)" class="nav-btn">My Work</button>
-          <button onclick="loadSection('contact.html', this)" class="nav-btn">Get In Contact</button>
+          <button onclick="loadSection('clips.html', this)" class="nav-btn">Clips</button>
         </nav>
       </div>
 
@@ -119,7 +119,15 @@
         try {
           const response = await fetch(file);
           const html = await response.text();
-          document.getElementById('content-area').innerHTML = html;
+          const contentArea = document.getElementById('content-area');
+          contentArea.innerHTML = html;
+
+          contentArea.querySelectorAll('script').forEach(oldScript => {
+            const newScript = document.createElement('script');
+            Array.from(oldScript.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value));
+            newScript.textContent = oldScript.textContent;
+            oldScript.replaceWith(newScript);
+          });
 
           document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('selected'));
           if (btnElement) {

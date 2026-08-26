@@ -1,0 +1,92 @@
+<style>
+  .content-section {
+    width: 100%;
+    display: flex;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+  }
+  #clips {
+    flex-direction: column;
+    align-content: center;
+    width: 70vw;
+  }
+  .clip {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    border: 1px wheat solid;
+    border-radius: 16px;
+    padding: 16px;
+    margin-bottom: 20px;
+  }
+  .clip-title {
+    color: wheat;
+    font-size: 1.1rem;
+  }
+  .clip video {
+    width: 100%;
+    border-radius: 8px;
+    background: black;
+  }
+  #clips-empty {
+    color: wheat;
+  }
+  @media (max-width: 600px) {
+    #clips {
+      width: 90vw;
+    }
+  }
+</style>
+
+<div id="clips" class="content-section"></div>
+
+<script>
+  (async function loadClips() {
+    const container = document.getElementById('clips');
+    const clipsDir = './res/clips/';
+
+    const titleFromFilename = (name) =>
+      decodeURIComponent(name)
+        .replace(/\.[^/.]+$/, '')
+        .replace(/[-_]+/g, ' ');
+
+    try {
+      const cacheKey = 'clips-listing';
+      let videoFiles = JSON.parse(sessionStorage.getItem(cacheKey) || 'null');
+
+      if (!videoFiles) {
+        const response = await fetch(clipsDir);
+        const html = await response.text();
+        const doc = new DOMParser().parseFromString(html, 'text/html');
+        const hrefs = Array.from(doc.querySelectorAll('a')).map((a) => a.getAttribute('href') || '');
+        videoFiles = hrefs.filter((href) => href.toLowerCase().endsWith('.mp4'));
+        sessionStorage.setItem(cacheKey, JSON.stringify(videoFiles));
+      }
+
+      if (videoFiles.length === 0) {
+        container.innerHTML = '<p id="clips-empty">No clips available yet.</p>';
+        return;
+      }
+
+      container.innerHTML = videoFiles
+        .map((file) => `
+          <div class="clip">
+            <span class="clip-title">${titleFromFilename(file)}</span>
+            <video controls preload="none" src="${clipsDir}${file}"></video>
+          </div>
+        `)
+        .join('');
+
+      container.querySelectorAll('video').forEach((video) => {
+        video.addEventListener('play', () => {
+          container.querySelectorAll('video').forEach((other) => {
+            if (other !== video) other.pause();
+          });
+        });
+      });
+    } catch (error) {
+      console.error('Error loading clips:', error);
+      container.innerHTML = '<p id="clips-empty">Could not load clips.</p>';
+    }
+  })();
+</script>

@@ -1,0 +1,7 @@
+services:
+  hm-site:
+    build: .
+    ports:
+      - "8000:8000"
+    volumes:
+      - /Users/anton/Movies/kroboclips:/app/hm-site/res/clips
