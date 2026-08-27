@@ -4,4 +4,5 @@ services:
     ports:
       - "8000:8000"
     volumes:
+      - ./hm-site:/app/hm-site
       - /Users/anton/Movies/kroboclips:/app/hm-site/res/clips
